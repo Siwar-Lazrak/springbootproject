@@ -152,7 +152,13 @@ public class ModuleController {
 				return new ResponseEntity<>(sousmoduleRepository.save(sousmodule), HttpStatus.CREATED);
 			}
 
-	
+		  	@GetMapping("/getSousmodule/{idSousModule}")
+		  	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+			 SousModule getSousmodule(@PathVariable Integer idSousModule) {
+			 
+			    return sousmoduleRepository.findById(idSousModule).get();
+			  }
+		  
 		
 	
 	
@@ -172,7 +178,7 @@ public class ModuleController {
 		  
 //		   probleme ne peut pas le supprimer car c'est un clé etranger
 		  @DeleteMapping("/deleteSousmodule/{idSousModule}")
-		  @PreAuthorize("hasRole('ADMIN')")
+		  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 			public ResponseEntity<Void> deleteSousmodule(@PathVariable Integer idSousModule) {
 				sousmoduleService.deleteSousModuleById(idSousModule);
 		 

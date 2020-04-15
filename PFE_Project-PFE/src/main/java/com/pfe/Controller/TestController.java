@@ -178,7 +178,7 @@ public class TestController {
 	public ResponseEntity<User> getUserById(@PathVariable(value = "id") Integer id)
 			throws RelationNotFoundException {
 		User user = userRepository.findById(id)
-				.orElseThrow(() -> new RelationNotFoundException("Employee not found for this id :: " + id));
+				.orElseThrow(() -> new RelationNotFoundException("User not found for this id :: " + id));
 		return ResponseEntity.ok().body(user);
 	}
 	//
