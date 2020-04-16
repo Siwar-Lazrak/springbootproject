@@ -27,16 +27,21 @@ import com.pfe.Model.Rapport;
 import com.pfe.Model.SousModule;
 import com.pfe.Model.User;
 import com.pfe.Model.UserAccess;
+import com.pfe.Model.Xabscisse;
+import com.pfe.Model.Yabscisse;
 import com.pfe.Repository.ModuleRepository;
 import com.pfe.Repository.RapportRepository;
 import com.pfe.Repository.SousModuleRepository;
 import com.pfe.Repository.UserAccessRepository;
 import com.pfe.Repository.UserRepository;
-
+import com.pfe.Repository.XabscisseRepository;
+import com.pfe.Repository.YabscisseRepository;
 import com.pfe.Service.IModuleService;
 import com.pfe.Service.IRapportService;
 import com.pfe.Service.ISousModuleService;
 import com.pfe.Service.IUserAccessService;
+import com.pfe.Service.IXabscisseService;
+import com.pfe.Service.IYabscisseService;
 
 
 
@@ -64,6 +69,14 @@ public class ModuleController {
 		@Autowired IRapportService rapportService;
 		
 		@Autowired RapportRepository rapportRepository;
+		
+		@Autowired IXabscisseService xabscisseService;
+		
+		@Autowired XabscisseRepository xabscisseRepository;
+		
+		@Autowired IYabscisseService yabscisseService;
+		
+		@Autowired YabscisseRepository yabscisseRepository;
 		
 		
 		  @GetMapping("/getAllModuls")
@@ -242,6 +255,46 @@ public class ModuleController {
 		  }
 			return new ResponseEntity<>(rapportRepository.save(rapport), HttpStatus.CREATED);
 		}
+//		partie Xabscisse
+	  
+	  @PostMapping("/createXabscisse/{idRapport}")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	  public ResponseEntity<?> createXabscisse(@PathVariable(value = "idRapport") Integer idRapport, @Valid @RequestBody Xabscisse xabscisse) {
+		  Optional<Rapport> rapport = rapportRepository.findById(idRapport);
+		  
+		  if(rapport.isPresent()) {
+			  xabscisse.setRapport(rapport.get());
+			  
+		  }
+		  return new ResponseEntity<>(xabscisseRepository.save(xabscisse), HttpStatus.CREATED);
+		  
+	  }
+	  
+	  @GetMapping("/getAllxabscisse")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+		public List<Xabscisse> getAllxabscisse() {
+			return xabscisseService.getAllXabscisse();
+		}
+	  
+//		partie Yabscisse
+	  
+	  @PostMapping("/createYabscisse/{id_X}")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	  public ResponseEntity<?> createYabscisse(@PathVariable(value = "id_X") Integer id_X, @Valid @RequestBody Yabscisse yabscisse) {
+		  Optional<Xabscisse> xabscisse = xabscisseRepository.findById(id_X);
+		  if(xabscisse.isPresent()) {
+			  yabscisse.setXabscisse(xabscisse.get());
+		  }
+		  return new ResponseEntity<>(yabscisseRepository.save(yabscisse), HttpStatus.CREATED);
+	  }
+	  
+	  @GetMapping("/getAllyabscisse")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+		public List<Yabscisse> getAllyabscisse() {
+			return yabscisseService.getAllYabscisse();
+		}
+	
+	
 	  
 }
 
