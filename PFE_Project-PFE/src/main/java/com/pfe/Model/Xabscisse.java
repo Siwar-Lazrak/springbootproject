@@ -95,13 +95,16 @@ public class Xabscisse {
 	}
 
 
+	
+
 	public Xabscisse(Integer id_X, @Size(max = 600) String field_name, @Size(max = 600) String field_reporting,
-			@Size(max = 1600) String filtre, Rapport rapport) {
+			@Size(max = 1600) String filtre, @Size(max = 1600) String operation, Rapport rapport) {
 		super();
 		this.id_X = id_X;
 		this.field_name = field_name;
 		this.field_reporting = field_reporting;
 		this.filtre = filtre;
+		this.operation = operation;
 		this.rapport = rapport;
 	}
 
@@ -114,8 +117,11 @@ public class Xabscisse {
 	@Override
 	public String toString() {
 		return "Xabscisse [id_X=" + id_X + ", field_name=" + field_name + ", field_reporting=" + field_reporting
-				+ ", filtre=" + filtre + ", rapport=" + rapport + "]";
+				+ ", filtre=" + filtre + ", operation=" + operation + ", rapport=" + rapport + "]";
 	}
+
+
+	
 	
 
 }
