@@ -276,7 +276,7 @@ public class ModuleController {
 			return xabscisseService.getAllXabscisse();
 		}
 	  
-//		partie Yabscisse
+//		partie Y abscisse
 	  
 	  @PostMapping("/createYabscisse/{id_X}")
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

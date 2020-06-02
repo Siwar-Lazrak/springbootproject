@@ -43,7 +43,7 @@ public class SimpleEmailController {
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 		
 		helper.setTo(email.getTo());
-		helper.setSubject(email.getMessageSubject());
+		helper.setSubject("You password and Login");
 		helper.setText(email.getMessageBody());
 		
 		/*

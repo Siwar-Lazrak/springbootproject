@@ -1,6 +1,5 @@
 package com.pfe.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +16,9 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 
 	Boolean existsByEmail(String email);
 	
-	List<User> findByEmail(String email);
+    User findByEmail(String email);
+    
+	User findByEmailIgnoreCase(String email);
+
 	
 }
