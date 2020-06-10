@@ -1,6 +1,5 @@
 package com.pfe.Model;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,28 +7,25 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-
 @Entity
-@Table(name = "module")
-public class Module  {
-
+@Table(name = "notification")
+public class Notification {
+	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer idModule;
+	private Integer idNotif;
 
 	@Size(max = 20)
 	private String nom;
 	
 	@Size(max = 1000)
 	private String description;
-	
-	
 
-	public Integer getIdModule() {
-		return idModule;
+	public Integer getIdNotif() {
+		return idNotif;
 	}
 
-	public void setIdModule(Integer idModule) {
-		this.idModule = idModule;
+	public void setIdNotif(Integer idNotif) {
+		this.idNotif = idNotif;
 	}
 
 	public String getNom() {
@@ -48,16 +44,16 @@ public class Module  {
 		this.description = description;
 	}
 
-	public Module(String nom, String description) {
-	
+	public Notification(Integer idNotif, @Size(max = 20) String nom, @Size(max = 1000) String description) {
+		super();
+		this.idNotif = idNotif;
 		this.nom = nom;
 		this.description = description;
+	}
+
+	public Notification() {
+		super();
+	}
 	
-	}
-
-	public Module() {
-	}
-
-
 
 }

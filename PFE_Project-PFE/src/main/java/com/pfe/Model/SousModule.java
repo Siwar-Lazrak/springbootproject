@@ -26,7 +26,7 @@ public class SousModule {
 	@Size(max = 300)
 	private String nomSousModule;
 	
-	@Size(max = 600)
+	@Size(max = 1000)
 	private String descriptionSousModule;
 		
 	

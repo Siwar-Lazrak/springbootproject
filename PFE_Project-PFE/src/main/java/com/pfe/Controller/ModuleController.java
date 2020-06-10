@@ -1,10 +1,16 @@
 package com.pfe.Controller;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.management.relation.RelationNotFoundException;
+import javax.sql.DataSource;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +29,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.Model.Module;
+import com.pfe.Model.Notification;
 import com.pfe.Model.Rapport;
 import com.pfe.Model.SousModule;
+import com.pfe.Model.TabCol;
+import com.pfe.Model.Tables;
 import com.pfe.Model.User;
 import com.pfe.Model.UserAccess;
 import com.pfe.Model.Xabscisse;
 import com.pfe.Model.Yabscisse;
 import com.pfe.Repository.ModuleRepository;
+import com.pfe.Repository.NotificationRepository;
 import com.pfe.Repository.RapportRepository;
 import com.pfe.Repository.SousModuleRepository;
 import com.pfe.Repository.UserAccessRepository;
@@ -42,6 +52,8 @@ import com.pfe.Service.ISousModuleService;
 import com.pfe.Service.IUserAccessService;
 import com.pfe.Service.IXabscisseService;
 import com.pfe.Service.IYabscisseService;
+
+import ch.qos.logback.classic.db.names.TableName;
 
 
 
@@ -70,6 +82,8 @@ public class ModuleController {
 		
 		@Autowired RapportRepository rapportRepository;
 		
+		@Autowired NotificationRepository notificationRepository;
+		
 		@Autowired IXabscisseService xabscisseService;
 		
 		@Autowired XabscisseRepository xabscisseRepository;
@@ -77,6 +91,7 @@ public class ModuleController {
 		@Autowired IYabscisseService yabscisseService;
 		
 		@Autowired YabscisseRepository yabscisseRepository;
+		 @Autowired		    protected  DataSource dataSource;
 		
 		
 		  @GetMapping("/getAllModuls")
@@ -293,7 +308,50 @@ public class ModuleController {
 		public List<Yabscisse> getAllyabscisse() {
 			return yabscisseService.getAllYabscisse();
 		}
+	  
+//		partie affichage tableau
+	  
+	  	@GetMapping("/getAlltables")
+	    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	    public ResponseEntity<?> getAlltables() throws Exception  {
+	        DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
+	        ResultSet tables = metaData.getTables(null, null, "stat%", new String[] { "TABLE" });
+	        ArrayList<Tables> tablesArray = new ArrayList<>();
+	        while (tables.next()) {	        	
+	            String tableName=tables.getString("TABLE_NAME");
+	            Tables table = new Tables (tableName);
+	      
+			  tablesArray.add(table);
+			  
+	        }
+	        return new ResponseEntity<>(tablesArray, HttpStatus.OK);
+	    }
+
+//		partie affichage tableau with columns
+	  	
+	  	@GetMapping("/getTablesColumns")
+	    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	  	public ResponseEntity getTableColumns(@RequestParam(value = "tableName", defaultValue = "") String tableName) throws Exception{
+	  		 DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
+				  ResultSet columns = metaData.getColumns(null, null, tableName, "%");
+				  ArrayList<TabCol> columnsName = new ArrayList<>();
+
+				  while(columns.next()) {
+					  String columnName=columns.getString("COLUMN_NAME");
+					  TabCol tabCol = new TabCol(columnName);
+					  columnsName.add(tabCol);
+					  }
+				  
+		        return new ResponseEntity<>(columnsName, HttpStatus.OK);
+	  	
+	  	}
+
+
+	  
+	  
+ 
 	
+		  
 	
 	  
 }
