@@ -27,9 +27,6 @@ public class Rapport {
 	@Size(max = 600)
 	private String chartType;
 	
-	@Size(max = 600)
-	private String descriptionRapport;
-	
 	@ManyToOne(cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	 @JoinColumn(name = "idSousModule")
 	 private SousModule sousmodule;
@@ -50,13 +47,6 @@ public class Rapport {
 		this.nomRapport = nomRapport;
 	}
 
-	public String getDescriptionRapport() {
-		return descriptionRapport;
-	}
-
-	public void setDescriptionRapport(String descriptionRapport) {
-		this.descriptionRapport = descriptionRapport;
-	}
 
 	public SousModule getSousmodule() {
 		return sousmodule;
@@ -84,13 +74,12 @@ public class Rapport {
 
 
 	public Rapport(Integer idRapport, @Size(max = 600) String nomRapport, @Size(max = 600) String title,
-			@Size(max = 600) String chartType, @Size(max = 600) String descriptionRapport, SousModule sousmodule) {
+			@Size(max = 600) String chartType, SousModule sousmodule) {
 		super();
 		this.idRapport = idRapport;
 		this.nomRapport = nomRapport;
 		this.title = title;
 		this.chartType = chartType;
-		this.descriptionRapport = descriptionRapport;
 		this.sousmodule = sousmodule;
 	}
 
@@ -101,7 +90,7 @@ public class Rapport {
 	@Override
 	public String toString() {
 		return "Rapport [idRapport=" + idRapport + ", nomRapport=" + nomRapport + ", title=" + title + ", chartType="
-				+ chartType + ", descriptionRapport=" + descriptionRapport + ", sousmodule=" + sousmodule + "]";
+				+ chartType + ", descriptionRapport="  + ", sousmodule=" + sousmodule + "]";
 	}
 
 	

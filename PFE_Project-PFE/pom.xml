@@ -27,6 +27,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<dependency><font></font>
+    <groupId>org.hibernate</groupId><font></font>
+    <artifactId>hibernate-c3p0</artifactId><font></font>
+    <version>5.3.6.Final</version><font></font>
+</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>

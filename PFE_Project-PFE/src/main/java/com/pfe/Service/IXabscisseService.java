@@ -6,9 +6,9 @@ import com.pfe.Model.Xabscisse;
 
 public interface IXabscisseService {
 	
-	void updatetXabscisse(Xabscisse xabscisse, Integer id_X);
+	void updatetXabscisse(Xabscisse xabscisse, Integer idX);
 
-	void deleteXabscisseId(Integer id_X);
+	void deleteXabscisseId(Integer idX);
 
 	Xabscisse save(Xabscisse xabscisse);
 	

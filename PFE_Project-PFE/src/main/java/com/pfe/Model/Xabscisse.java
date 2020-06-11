@@ -15,13 +15,13 @@ import javax.validation.constraints.Size;
 public class Xabscisse {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id_X;
+	private Integer idX;
 	
 	@Size(max = 600)
-	private String field_name;
+	private String fieldname;
 	
 	@Size(max = 600)
-	private String field_reporting;
+	private String fieldreporting;
 	
 	@Size(max = 1600)
 	private String filtre;
@@ -29,39 +29,45 @@ public class Xabscisse {
 	@Size(max = 1600)
 	private String operation;
 	
+	@Size(max = 1600)
+	private String tablerep;
+	
+	@Size(max = 1600)
+	private String idfield;
+	
 
 	@ManyToOne(cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	 @JoinColumn(name = "idRapport")
 	 private Rapport rapport;
+	
 
-
-	public Integer getId_X() {
-		return id_X;
+	public Integer getIdX() {
+		return idX;
 	}
 
 
-	public void setId_X(Integer id_X) {
-		this.id_X = id_X;
+	public void setIdX(Integer idX) {
+		this.idX = idX;
 	}
 
 
-	public String getField_name() {
-		return field_name;
+	public String getFieldname() {
+		return fieldname;
 	}
 
 
-	public void setField_name(String field_name) {
-		this.field_name = field_name;
+	public void setField_name(String fieldname) {
+		this.fieldname = fieldname;
 	}
 
 
-	public String getField_reporting() {
-		return field_reporting;
+	public String getFieldreporting() {
+		return fieldreporting;
 	}
 
 
-	public void setField_reporting(String field_reporting) {
-		this.field_reporting = field_reporting;
+	public void setField_reporting(String fieldreporting) {
+		this.fieldreporting = fieldreporting;
 	}
 
 
@@ -94,32 +100,53 @@ public class Xabscisse {
 		this.operation = operation;
 	}
 
-
-	
-
-	public Xabscisse(Integer id_X, @Size(max = 600) String field_name, @Size(max = 600) String field_reporting,
-			@Size(max = 1600) String filtre, @Size(max = 1600) String operation, Rapport rapport) {
-		super();
-		this.id_X = id_X;
-		this.field_name = field_name;
-		this.field_reporting = field_reporting;
-		this.filtre = filtre;
-		this.operation = operation;
-		this.rapport = rapport;
+	public String getTablerep() {
+		return tablerep;
 	}
 
+
+	public void setTable_rep(String tablerep) {
+		this.tablerep = tablerep;
+	}
+
+
+	public String getIdfield() {
+		return idfield;
+	}
+
+
+	public void setId_field(String idfield) {
+		this.idfield = idfield;
+	}
 
 	public Xabscisse() {
 		super();
 	}
 
 
-	@Override
-	public String toString() {
-		return "Xabscisse [id_X=" + id_X + ", field_name=" + field_name + ", field_reporting=" + field_reporting
-				+ ", filtre=" + filtre + ", operation=" + operation + ", rapport=" + rapport + "]";
+	public Xabscisse(Integer idX, @Size(max = 600) String fieldname, @Size(max = 600) String fieldreporting,
+			@Size(max = 1600) String filtre, @Size(max = 1600) String operation, @Size(max = 1600) String tablerep,
+			@Size(max = 1600) String idfield, Rapport rapport) {
+		super();
+		this.idX = idX;
+		this.fieldname = fieldname;
+		this.fieldreporting = fieldreporting;
+		this.filtre = filtre;
+		this.operation = operation;
+		this.tablerep = tablerep;
+		this.idfield = idfield;
+		this.rapport = rapport;
 	}
 
+
+	@Override
+	public String toString() {
+		return "Xabscisse [idX=" + idX + ", fieldname=" + fieldname + ", fieldreporting=" + fieldreporting
+				+ ", filtre=" + filtre + ", operation=" + operation + ", tablerep=" + tablerep + ", idfield="
+				+ idfield + ", rapport=" + rapport + "]";
+	}
+	
+	
 
 	
 	

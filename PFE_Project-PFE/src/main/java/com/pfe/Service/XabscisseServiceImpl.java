@@ -16,7 +16,7 @@ public class XabscisseServiceImpl implements IXabscisseService {
 	@Autowired private XabscisseRepository xabscisseRepository;
 
 	@Override
-	public void updatetXabscisse(Xabscisse xabscisse, Integer id_X) {
+	public void updatetXabscisse(Xabscisse xabscisse, Integer idX) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -29,7 +29,7 @@ public class XabscisseServiceImpl implements IXabscisseService {
 
 	@Override
 	public Xabscisse save(Xabscisse xabscisse) {
-		if (xabscisse.getId_X() != null && xabscisseRepository.existsById(xabscisse.getId_X())) {
+		if (xabscisse.getIdX() != null && xabscisseRepository.existsById(xabscisse.getIdX())) {
 			throw new EntityExistsException("There is already existing entity with such ID in the database.");
 		}
  

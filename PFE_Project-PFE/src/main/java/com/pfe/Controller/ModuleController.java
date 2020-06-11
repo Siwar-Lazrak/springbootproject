@@ -1,10 +1,7 @@
 package com.pfe.Controller;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfe.Model.Module;
-import com.pfe.Model.Notification;
 import com.pfe.Model.Rapport;
 import com.pfe.Model.SousModule;
 import com.pfe.Model.TabCol;
@@ -53,7 +49,6 @@ import com.pfe.Service.IUserAccessService;
 import com.pfe.Service.IXabscisseService;
 import com.pfe.Service.IYabscisseService;
 
-import ch.qos.logback.classic.db.names.TableName;
 
 
 
@@ -276,7 +271,7 @@ public class ModuleController {
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	  public ResponseEntity<?> createXabscisse(@PathVariable(value = "idRapport") Integer idRapport, @Valid @RequestBody Xabscisse xabscisse) {
 		  Optional<Rapport> rapport = rapportRepository.findById(idRapport);
-		  
+		  	  
 		  if(rapport.isPresent()) {
 			  xabscisse.setRapport(rapport.get());
 			  
@@ -331,7 +326,7 @@ public class ModuleController {
 	  	
 	  	@GetMapping("/getTablesColumns")
 	    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	  	public ResponseEntity getTableColumns(@RequestParam(value = "tableName", defaultValue = "") String tableName) throws Exception{
+	  	public ResponseEntity<?> getTableColumns(@RequestParam(value = "tableName", defaultValue = "") String tableName) throws Exception{
 	  		 DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
 				  ResultSet columns = metaData.getColumns(null, null, tableName, "%");
 				  ArrayList<TabCol> columnsName = new ArrayList<>();
