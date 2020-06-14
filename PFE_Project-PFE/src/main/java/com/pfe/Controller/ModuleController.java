@@ -2,6 +2,7 @@ package com.pfe.Controller;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -226,6 +227,7 @@ public class ModuleController {
 	  
 		  
 	  @PostMapping("/createuseraccess/{userId}/{idSousModule}")
+	  @PreAuthorize("hasRole('SUPERADMIN')")
 		public ResponseEntity<?> createuseraccess(@PathVariable(value = "userId") Integer userId, @PathVariable(value = "idSousModule") Integer idSousModule,
 		         @Valid @RequestBody UserAccess useraccess) {
 		 	  
@@ -240,7 +242,7 @@ public class ModuleController {
 		}
 	
 	  @GetMapping("/getAllAccess")
-	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('SUPERADMIN')")
 	  public List<UserAccess> getAllAccess() {
 		  return useraccessRepository.findAll(); 
 	  }
@@ -255,7 +257,7 @@ public class ModuleController {
 	  
 	  @PostMapping("/createRapport/{idSousModule}")
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-		public ResponseEntity<?> createRapport(@PathVariable(value = "idSousModule") Integer idSousModule,
+		public ResponseEntity<Integer> createRapport(@PathVariable(value = "idSousModule") Integer idSousModule,
 		         @Valid @RequestBody Rapport rapport) {
 		  
 		  Optional<SousModule> sousmodule = sousmoduleRepository.findById(idSousModule);
@@ -263,7 +265,13 @@ public class ModuleController {
 		  if(sousmodule.isPresent()) {
 			  rapport.setSousmodule(sousmodule.get());
 		  }
-			return new ResponseEntity<>(rapportRepository.save(rapport), HttpStatus.CREATED);
+		  rapportRepository.save(rapport);
+		  
+		  
+			return new ResponseEntity<>(rapport.getIdRapport(), HttpStatus.CREATED);
+			
+			
+			
 		}
 //		partie Xabscisse
 	  
@@ -271,9 +279,10 @@ public class ModuleController {
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	  public ResponseEntity<?> createXabscisse(@PathVariable(value = "idRapport") Integer idRapport, @Valid @RequestBody Xabscisse xabscisse) {
 		  Optional<Rapport> rapport = rapportRepository.findById(idRapport);
-		  	  
+		 
 		  if(rapport.isPresent()) {
 			  xabscisse.setRapport(rapport.get());
+			  
 			  
 		  }
 		  return new ResponseEntity<>(xabscisseRepository.save(xabscisse), HttpStatus.CREATED);
@@ -305,20 +314,29 @@ public class ModuleController {
 		}
 	  
 //		partie affichage tableau
+	  DatabaseMetaData metaData=null;
+	  public DatabaseMetaData getMetaData() throws SQLException {	  
+		  if(metaData ==null)
+			  metaData=this.dataSource.getConnection().getMetaData();
+		  return metaData;		  
+	  }
 	  
 	  	@GetMapping("/getAlltables")
 	    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	    public ResponseEntity<?> getAlltables() throws Exception  {
-	        DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
-	        ResultSet tables = metaData.getTables(null, null, "stat%", new String[] { "TABLE" });
+	    public ResponseEntity<?> getAlltables() throws SQLException   {	  		
 	        ArrayList<Tables> tablesArray = new ArrayList<>();
-	        while (tables.next()) {	        	
-	            String tableName=tables.getString("TABLE_NAME");
-	            Tables table = new Tables (tableName);
-	      
-			  tablesArray.add(table);
-			  
-	        }
+	  		try {	  			
+	  			 DatabaseMetaData metaData=getMetaData();		        
+		        ResultSet tables = metaData.getTables(null, null, "stat%", new String[] { "TABLE" });
+		        while (tables.next()) {	        	
+		            String tableName=tables.getString("TABLE_NAME");
+		            Tables table = new Tables (tableName);		      
+				  tablesArray.add(table);				  
+		        }
+	  		}catch(Exception e) {	  				  			
+	  		}finally {
+	  			this.dataSource.getConnection().close();
+	  		}        	        
 	        return new ResponseEntity<>(tablesArray, HttpStatus.OK);
 	    }
 
@@ -327,16 +345,16 @@ public class ModuleController {
 	  	@GetMapping("/getTablesColumns")
 	    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	  	public ResponseEntity<?> getTableColumns(@RequestParam(value = "tableName", defaultValue = "") String tableName) throws Exception{
-	  		 DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
-				  ResultSet columns = metaData.getColumns(null, null, tableName, "%");
+	  		 DatabaseMetaData metaData=getMetaData();
+	  		 
+	  		 ResultSet columns = metaData.getColumns(null, null, tableName, "%");
 				  ArrayList<TabCol> columnsName = new ArrayList<>();
-
 				  while(columns.next()) {
 					  String columnName=columns.getString("COLUMN_NAME");
 					  TabCol tabCol = new TabCol(columnName);
 					  columnsName.add(tabCol);
-					  }
-				  
+					  }				  
+				  this.dataSource.getConnection().close();				  
 		        return new ResponseEntity<>(columnsName, HttpStatus.OK);
 	  	
 	  	}

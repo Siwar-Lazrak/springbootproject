@@ -17,16 +17,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
-
 import javax.management.relation.RelationNotFoundException;
-
 import javax.validation.Valid;
-
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -110,7 +105,7 @@ public class TestController {
 	
 
 		@PostMapping("/signup")
-		@PreAuthorize("hasRole('ADMIN')")
+		@PreAuthorize("hasRole('SUPERADMIN')")
 		public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 			if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 				return ResponseEntity
@@ -169,7 +164,7 @@ public class TestController {
 	
 	 
 	@GetMapping("/getAllusers")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('SUPERADMIN')")
 	  public ResponseEntity<List<User>> getAllUsers() {
 	    List<User> users = new ArrayList<>();
 	    try {
@@ -198,7 +193,7 @@ public class TestController {
 	
 	//
 	@GetMapping("/user/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('SUPERADMIN')")
 	public ResponseEntity<User> getUserById(@PathVariable(value = "id") Integer id)
 			throws RelationNotFoundException {
 		User user = userRepository.findById(id)
@@ -208,7 +203,7 @@ public class TestController {
 	//
 
 	 @DeleteMapping("/users/{id}")
-	 @PreAuthorize("hasRole('ADMIN')")
+	 @PreAuthorize("hasRole('SUPERADMIN')")
 	  public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Integer id) {
 	    try {
 	      userRepository.deleteById(id);
@@ -218,7 +213,7 @@ public class TestController {
 	    }
 	  }
 	  @DeleteMapping("/users")
-	  @PreAuthorize("hasRole('ADMIN')")
+	  @PreAuthorize("hasRole('SUPERADMIN')")
 	  public ResponseEntity<HttpStatus> deleteAllUsers() {
 	    try {
 	      userRepository.deleteAll();
@@ -242,7 +237,7 @@ public class TestController {
 	 */
 	  
 	  @PutMapping("/update/{id}")
-	  @PreAuthorize("hasRole('ADMIN')")
+	  @PreAuthorize("hasRole('SUPERADMIN')")
 	  public ResponseEntity<User> updateUser(@PathVariable("id") Integer id, @RequestBody User user) {
 	    Optional<User> userData = userRepository.findById(id);	 
 	    if (userData.isPresent()) {
