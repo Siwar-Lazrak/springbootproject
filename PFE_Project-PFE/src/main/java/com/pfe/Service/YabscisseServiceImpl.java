@@ -17,20 +17,20 @@ public class YabscisseServiceImpl implements IYabscisseService {
 
 
 	@Override
-	public void updatetYabscisse(Yabscisse Yabscisse, Integer id_Y) {
+	public void updatetYabscisse(Yabscisse Yabscisse, Integer idY) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void deleteYabscisseId(Integer id_Y) {
+	public void deleteYabscisseId(Integer idY) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Yabscisse save(Yabscisse yabscisse) {
-		if (yabscisse.getId_Y() != null && yabscisseRepository.existsById(yabscisse.getId_Y())) {
+		if (yabscisse.getIdY() != null && yabscisseRepository.existsById(yabscisse.getIdY())) {
 			throw new EntityExistsException("There is already existing entity with such ID in the database.");
 		}
  

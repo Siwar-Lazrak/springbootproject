@@ -20,7 +20,7 @@ public class UserAccess  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name = "id_sous_module")
 	private SousModule sousmodule;
@@ -53,12 +53,6 @@ public class UserAccess  {
 		this.user = user;
 	}
 
-	
-
-	@Override
-	public String toString() {
-		return "UserAccess [id=" + id + ", sousmodule=" + sousmodule + ", user=" + user + "]";
-	}
 
 	public UserAccess() {
 		
@@ -70,6 +64,13 @@ public class UserAccess  {
 		this.sousmodule = sousmodule;
 		this.user = user;
 	}
+
+	@Override
+	public String toString() {
+		return "UserAccess [id=" + id + ", sousmodule=" + sousmodule + ", user=" + user + "]";
+	}
+
+
 
 
 	

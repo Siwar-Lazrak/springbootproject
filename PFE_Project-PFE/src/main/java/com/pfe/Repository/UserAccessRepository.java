@@ -9,6 +9,7 @@ public interface UserAccessRepository extends JpaRepository<UserAccess, Integer>
 		
 	List<UserAccess> findByUserId(Integer userId);
 	List<UserAccess> findBySousmodule(SousModule sousmodule);
+
 	
 	
 

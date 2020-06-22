@@ -1,20 +1,19 @@
 package com.pfe.Controller;
-
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
 import javax.management.relation.RelationNotFoundException;
 import javax.sql.DataSource;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.pfe.Model.Module;
 import com.pfe.Model.Rapport;
 import com.pfe.Model.SousModule;
@@ -58,8 +56,6 @@ import com.pfe.Service.IYabscisseService;
 @RequestMapping("/api/test")
 public class ModuleController {
 	
-
-
 	    @Autowired IModuleService mdouleService;
 	
 	   	@Autowired ISousModuleService sousmoduleService;
@@ -87,9 +83,10 @@ public class ModuleController {
 		@Autowired IYabscisseService yabscisseService;
 		
 		@Autowired YabscisseRepository yabscisseRepository;
-		 @Autowired		    protected  DataSource dataSource;
+	   
+		@Autowired protected  DataSource dataSource;
 		
-		
+//		partie Module
 		  @GetMapping("/getAllModuls")
 		  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 		  public ResponseEntity<List<Module>> getAllModuls(@RequestParam(required = false) String nom) {
@@ -118,7 +115,7 @@ public class ModuleController {
 			 
 			    return moduleRepository.findById(id).get();
 			  }
-		  
+ 
 		 
 		  
 		  @PostMapping("/modul")
@@ -126,7 +123,7 @@ public class ModuleController {
 		  public ResponseEntity<Module> createModul(@RequestBody Module module) {
 		    try {
 		      Module _module = moduleRepository
-		          .save(new Module( module.getNom(), module.getDescription()));
+		          .save(new Module(module.getNom(), module.getDescription()));
 		      return new ResponseEntity<>(_module, HttpStatus.CREATED);
 		    } catch (Exception e) {
 		      return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
@@ -173,8 +170,13 @@ public class ModuleController {
 			  if(module.isPresent()) {
 				  sousmodule.setModule(module.get());
 			  }
-				return new ResponseEntity<>(sousmoduleRepository.save(sousmodule), HttpStatus.CREATED);
+			  sousmoduleRepository.save(sousmodule);
+				return new ResponseEntity<>(sousmodule.getIdSousModule(), HttpStatus.CREATED);
 			}
+		  
+		  
+		  
+		
 
 		  	@GetMapping("/getSousmodule/{idSousModule}")
 		  	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -184,15 +186,6 @@ public class ModuleController {
 			  }
 		  
 		
-	
-	
-	  @GetMapping("/getSousmoduleByModule/{idModule}")
-	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	  public List <SousModule> getSousmoduleByModule(@PathVariable(value = "idModule") Integer idModule) {
-		  return sousmoduleRepository.findByModuleIdModule(idModule);
-	  
-	  }
-	 
 		  
 		  @GetMapping("/getAllSousmodule")
 		  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -227,7 +220,7 @@ public class ModuleController {
 	  
 		  
 	  @PostMapping("/createuseraccess/{userId}/{idSousModule}")
-	  @PreAuthorize("hasRole('SUPERADMIN')")
+	  @PreAuthorize("hasRole('ADMIN')")
 		public ResponseEntity<?> createuseraccess(@PathVariable(value = "userId") Integer userId, @PathVariable(value = "idSousModule") Integer idSousModule,
 		         @Valid @RequestBody UserAccess useraccess) {
 		 	  
@@ -246,6 +239,15 @@ public class ModuleController {
 	  public List<UserAccess> getAllAccess() {
 		  return useraccessRepository.findAll(); 
 	  }
+	  
+	  @GetMapping("/getaccessByuserId/{id}")
+	  	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+		 public List<?>  getaccessByuserId(@PathVariable(value = "id") Integer id) {		
+		 
+		  List<UserAccess> useracc = useraccessRepository.findByUserId(id);	
+		  return useracc;
+		    	   
+		  }
 	 
 //		partie rapport
 	  
@@ -258,35 +260,24 @@ public class ModuleController {
 	  @PostMapping("/createRapport/{idSousModule}")
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 		public ResponseEntity<Integer> createRapport(@PathVariable(value = "idSousModule") Integer idSousModule,
-		         @Valid @RequestBody Rapport rapport) {
-		  
-		  Optional<SousModule> sousmodule = sousmoduleRepository.findById(idSousModule);
-		  
+		         @Valid @RequestBody Rapport rapport) {	  
+		  Optional<SousModule> sousmodule = sousmoduleRepository.findById(idSousModule);		  
 		  if(sousmodule.isPresent()) {
 			  rapport.setSousmodule(sousmodule.get());
 		  }
 		  rapportRepository.save(rapport);
-		  
-		  
-			return new ResponseEntity<>(rapport.getIdRapport(), HttpStatus.CREATED);
-			
-			
-			
+			return new ResponseEntity<>(rapport.getIdRapport(), HttpStatus.CREATED);					
 		}
 //		partie Xabscisse
 	  
 	  @PostMapping("/createXabscisse/{idRapport}")
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	  public ResponseEntity<?> createXabscisse(@PathVariable(value = "idRapport") Integer idRapport, @Valid @RequestBody Xabscisse xabscisse) {
-		  Optional<Rapport> rapport = rapportRepository.findById(idRapport);
-		 
+		  Optional<Rapport> rapport = rapportRepository.findById(idRapport);	 
 		  if(rapport.isPresent()) {
-			  xabscisse.setRapport(rapport.get());
-			  
-			  
-		  }
-		  return new ResponseEntity<>(xabscisseRepository.save(xabscisse), HttpStatus.CREATED);
-		  
+			  xabscisse.setRapport(rapport.get());			  		  
+		  }xabscisseRepository.save(xabscisse);
+		  return new ResponseEntity<>(xabscisse.getIdX(), HttpStatus.CREATED);	  
 	  }
 	  
 	  @GetMapping("/getAllxabscisse")
@@ -294,25 +285,89 @@ public class ModuleController {
 		public List<Xabscisse> getAllxabscisse() {
 			return xabscisseService.getAllXabscisse();
 		}
-	  
+		
+		  @GetMapping("/getXByRapport/{idRapport}")
+		  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+		  public List <Xabscisse> getXByRapport(@PathVariable(value = "idRapport") Integer idRapport) {
+			  return xabscisseRepository.findByRapportIdRapport(idRapport);
+		  
+		  }
+		  
+		  @GetMapping("/getxabscisseId/{id}")
+		  	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+			 public List  getxabscisseId(@PathVariable(value = "id") Integer id) {		
+			  System.out.println(id);
+			  List<Xabscisse> X = xabscisseRepository.findAllByIdX(id);	
+			  for(Xabscisse o: X) {
+				  System.out.println(o.getFieldreporting());
+			  }
+			  return X;
+			    	   
+			  }
+  
 //		partie Y abscisse
 	  
-	  @PostMapping("/createYabscisse/{id_X}")
+		
+
+		  
+	  @PostMapping("/createYabscisse/{idX}")
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	  public ResponseEntity<?> createYabscisse(@PathVariable(value = "id_X") Integer id_X, @Valid @RequestBody Yabscisse yabscisse) {
-		  Optional<Xabscisse> xabscisse = xabscisseRepository.findById(id_X);
+	  public ResponseEntity<?> createYabscisse(@PathVariable(value = "idX") Integer idX, @Valid @RequestBody Yabscisse yabscisse) {
+		  
+		  
+		  Optional<Xabscisse> xabscisse = xabscisseRepository.findById(idX);
 		  if(xabscisse.isPresent()) {
-			  yabscisse.setXabscisse(xabscisse.get());
-		  }
-		  return new ResponseEntity<>(yabscisseRepository.save(yabscisse), HttpStatus.CREATED);
+			  yabscisse.setXabscisse(xabscisse.get());  
+		  }				 yabscisseRepository.save(yabscisse);
+		  ArrayList<Yabscisse> yabscisseArray = new ArrayList<>();		      
+		  yabscisseArray.add(yabscisse);	
+
+		  return new ResponseEntity<>(yabscisseArray, HttpStatus.CREATED);	 
 	  }
 	  
 	  @GetMapping("/getAllyabscisse")
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 		public List<Yabscisse> getAllyabscisse() {
-			return yabscisseService.getAllYabscisse();
-		}
+		  	return yabscisseService.getAllYabscisse();
+		  
+		}	
 	  
+	  
+	  @GetMapping("/getYByX/{idX}")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	  public List getYByX(@PathVariable(value = "idX") Integer idX) {
+		  System.out.println(idX);
+		  List<Yabscisse> l= yabscisseRepository.findByXabscisseIdX(idX);
+		  for(Yabscisse o: l) {
+			  System.out.println(o.getFieldname());
+		  }
+		  return l;
+	  
+	  }
+	  
+		
+	  @GetMapping("/getXForY/{idX}")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") 
+	  public ResponseEntity<Object> getXForY(@PathVariable("idX") Integer idX){	    
+		    Optional<Xabscisse> XData = xabscisseRepository.findById(idX);
+			      Xabscisse _xabssice = XData.get(); 
+			      HashMap<Integer, List<Yabscisse>> map = new HashMap<Integer, List<Yabscisse>>(); 
+			      map.put(idX, _xabssice.getYabsc()); 
+	
+			  for (Integer key: map.keySet()) {
+	  System.out.println("key : " + key); 
+	  System.out.print("value : " + map.get(key)); } 
+
+			    return new ResponseEntity<Object>(map.get(idX), HttpStatus.OK); 
+			    }
+	 
+	 
+	 
+	 
+
+
+
+
 //		partie affichage tableau
 	  DatabaseMetaData metaData=null;
 	  public DatabaseMetaData getMetaData() throws SQLException {	  
@@ -358,7 +413,7 @@ public class ModuleController {
 		        return new ResponseEntity<>(columnsName, HttpStatus.OK);
 	  	
 	  	}
-
+	  
 
 	  
 	  

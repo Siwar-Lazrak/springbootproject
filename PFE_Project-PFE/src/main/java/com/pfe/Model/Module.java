@@ -1,12 +1,12 @@
 package com.pfe.Model;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+
 
 
 @Entity
@@ -23,7 +23,6 @@ public class Module  {
 	private String description;
 	
 	
-
 	public Integer getIdModule() {
 		return idModule;
 	}
@@ -48,11 +47,14 @@ public class Module  {
 		this.description = description;
 	}
 
-	public Module(String nom, String description) {
+
+	
+
+	public Module( @Size(max = 20) String nom, @Size(max = 1000) String description) {
 	
 		this.nom = nom;
 		this.description = description;
-	
+		
 	}
 
 	public Module() {

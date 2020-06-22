@@ -1,10 +1,13 @@
 package com.pfe.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 import javax.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pfe.Model.SousModule;
+import com.pfe.Repository.ModuleRepository;
 import com.pfe.Repository.SousModuleRepository;
 
 
@@ -14,6 +17,8 @@ import com.pfe.Repository.SousModuleRepository;
 public class SousmoduleServiceImpl implements ISousModuleService{
 	
 	@Autowired private SousModuleRepository sousModuleREpository;
+	@Autowired ModuleRepository moduleRepository;
+
    
 	@Override
 	public void updateSousModul(SousModule sousModule, Integer idSousModule) {
@@ -47,6 +52,8 @@ public class SousmoduleServiceImpl implements ISousModuleService{
 				return sousModuleREpository.findAll();
 			}
 
+
+			
 
 
 

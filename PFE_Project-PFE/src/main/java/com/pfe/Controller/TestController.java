@@ -164,7 +164,7 @@ public class TestController {
 	
 	 
 	@GetMapping("/getAllusers")
-	@PreAuthorize("hasRole('SUPERADMIN')")
+	@PreAuthorize("hasRole('SUPERADMIN') or hasRole('ADMIN')")
 	  public ResponseEntity<List<User>> getAllUsers() {
 	    List<User> users = new ArrayList<>();
 	    try {

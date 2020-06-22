@@ -1,5 +1,8 @@
 package com.pfe.Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,8 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "xabscisse")
@@ -40,6 +45,10 @@ public class Xabscisse {
 	 @JoinColumn(name = "idRapport")
 	 private Rapport rapport;
 	
+	@JsonManagedReference
+    @OneToMany(mappedBy = "xabscisse", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Yabscisse> yabsc = new ArrayList<>();
+ 
 
 	public Integer getIdX() {
 		return idX;
@@ -118,15 +127,30 @@ public class Xabscisse {
 	public void setId_field(String idfield) {
 		this.idfield = idfield;
 	}
+	
+	
+
+	public List<Yabscisse> getYabsc() {
+		return yabsc;
+	}
+
+
+	public List<Yabscisse> setYabsc(List<Yabscisse> yabsc) {
+		return this.yabsc = yabsc;
+	}
+
 
 	public Xabscisse() {
 		super();
 	}
 
 
+	
+
+
 	public Xabscisse(Integer idX, @Size(max = 600) String fieldname, @Size(max = 600) String fieldreporting,
 			@Size(max = 1600) String filtre, @Size(max = 1600) String operation, @Size(max = 1600) String tablerep,
-			@Size(max = 1600) String idfield, Rapport rapport) {
+			@Size(max = 1600) String idfield, Rapport rapport, List<Yabscisse> yabsc) {
 		super();
 		this.idX = idX;
 		this.fieldname = fieldname;
@@ -136,15 +160,11 @@ public class Xabscisse {
 		this.tablerep = tablerep;
 		this.idfield = idfield;
 		this.rapport = rapport;
+		this.yabsc = yabsc;
 	}
 
 
-	@Override
-	public String toString() {
-		return "Xabscisse [idX=" + idX + ", fieldname=" + fieldname + ", fieldreporting=" + fieldreporting
-				+ ", filtre=" + filtre + ", operation=" + operation + ", tablerep=" + tablerep + ", idfield="
-				+ idfield + ", rapport=" + rapport + "]";
-	}
+	
 	
 	
 

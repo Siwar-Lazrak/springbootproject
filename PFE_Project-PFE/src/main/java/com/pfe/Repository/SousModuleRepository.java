@@ -9,6 +9,7 @@ import com.pfe.Model.SousModule;
 
 @Repository
 public interface SousModuleRepository extends JpaRepository<SousModule, Integer>{
-	List <SousModule> findByModuleIdModule(@Param("idModule") Integer idModule );
+	
+
 	
 }

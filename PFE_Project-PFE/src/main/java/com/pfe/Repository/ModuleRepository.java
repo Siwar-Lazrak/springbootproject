@@ -12,6 +12,7 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
 		List<Module> findByNom(String nom);
 		
 	    List<Module> findByNomContaining(String nom);
+	    List<Module> findByIdModule(Integer idModule);
 
 
 }
