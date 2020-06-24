@@ -26,7 +26,7 @@ public class SimpleEmailController {
 	public JavaMailSender javaMailSender;
 	
 	@PostMapping(value = "/sendEmailOne")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('SUPERADMIN')")
 	public String sendEmail(@RequestBody Email email) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(email.getTo());
@@ -37,7 +37,7 @@ public class SimpleEmailController {
 	}
 	
 	@PostMapping(value = "/sendEmailAttechment")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('SUPERADMIN')")
 	public String sendEmailAttachement(@RequestBody Email email) throws MessagingException {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);

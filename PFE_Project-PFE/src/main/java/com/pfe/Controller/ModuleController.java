@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +40,7 @@ import com.pfe.Repository.UserAccessRepository;
 import com.pfe.Repository.UserRepository;
 import com.pfe.Repository.XabscisseRepository;
 import com.pfe.Repository.YabscisseRepository;
+import com.pfe.Response.ResourceNotFoundException;
 import com.pfe.Service.IModuleService;
 import com.pfe.Service.IRapportService;
 import com.pfe.Service.ISousModuleService;
@@ -109,13 +109,22 @@ public class ModuleController {
 		  }
 		  
 		  
-		  	@GetMapping("/getModuleId/{id}")
-		  	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-			 Module getModuleId(@PathVariable Integer id) {
-			 
-			    return moduleRepository.findById(id).get();
-			  }
- 
+	/*
+	 * @GetMapping("/getModuleId/{id}")
+	 * 
+	 * @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") public ResponseEntity<?>
+	 * getModuleId(@PathVariable Integer id) { return new
+	 * ResponseEntity<>(moduleRepository.findById(id).get(), HttpStatus.CREATED);
+	 * 
+	 * }
+	 */
+		  	 @GetMapping("/getModuleId/{id}")
+		     public ResponseEntity<Module> getModuleId(@PathVariable(value = "id") Integer idModule)
+		         throws ResourceNotFoundException {
+		         Module module = moduleRepository.findById(idModule)
+		           .orElseThrow(() -> new ResourceNotFoundException("Module not found for this id :: " + idModule));
+		         return ResponseEntity.ok().body(module);
+		     }
 		 
 		  
 		  @PostMapping("/modul")
@@ -130,22 +139,39 @@ public class ModuleController {
 		    }
 		  }
 		  
+	/*
+	 * @PutMapping("/updateModule/{idModule}")
+	 * 
+	 * @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") public
+	 * ResponseEntity<Module> updateModule(@PathVariable("idModule") Integer
+	 * idModule, @RequestBody Module modul) { Optional<Module> moduleData =
+	 * moduleRepository.findById(idModule);
+	 * 
+	 * if (moduleData.isPresent()) { Module _module = moduleData.get();
+	 * _module.setNom(modul.getNom());
+	 * _module.setDescription(modul.getDescription());
+	 * 
+	 * return new ResponseEntity<>(moduleRepository.save(_module), HttpStatus.OK); }
+	 * else { return new ResponseEntity<>(HttpStatus.NOT_FOUND); } }
+	 */
 		    @PutMapping("/updateModule/{idModule}")
-		    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-		  public ResponseEntity<Module> updateModule(@PathVariable("idModule") Integer idModule, @RequestBody Module modul) {
-		    Optional<Module> moduleData = moduleRepository.findById(idModule);
-
-		    if (moduleData.isPresent()) {
-		      Module _module = moduleData.get();
-		      _module.setNom(modul.getNom());
-		      _module.setDescription(modul.getDescription());
+		    @PreAuthorize("hasRole('ADMIN')")
+		    public ResponseEntity<Module> updateModule(@PathVariable(value = "idModule") Integer idModule, @RequestBody Module module) {
 		     
-		      return new ResponseEntity<>(moduleRepository.save(_module), HttpStatus.OK);
-		    } else {
-		      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		        		
+					    Optional<Module> moduleData = moduleRepository.findById(idModule);	 
+					    if (moduleData.isPresent()) {
+					    	Module _module = moduleData.get();
+					    	_module.setNom(module.getNom());
+					    	_module.setDescription(module.getDescription());
+				      return new ResponseEntity<>(moduleRepository.save(_module), HttpStatus.OK);
+					    } else {
+					      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+					    }
+
+		   
 		    }
-		  }
-		  
+		
 		  @DeleteMapping("/deleteModule/{id}")
 		  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 		  public ResponseEntity<HttpStatus> deleteModule(@PathVariable("id") Integer id) {
@@ -220,7 +246,7 @@ public class ModuleController {
 	  
 		  
 	  @PostMapping("/createuseraccess/{userId}/{idSousModule}")
-	  @PreAuthorize("hasRole('ADMIN')")
+	  @PreAuthorize("hasRole('SUPERADMIN') or hasRole('ADMIN')")
 		public ResponseEntity<?> createuseraccess(@PathVariable(value = "userId") Integer userId, @PathVariable(value = "idSousModule") Integer idSousModule,
 		         @Valid @RequestBody UserAccess useraccess) {
 		 	  
@@ -295,7 +321,7 @@ public class ModuleController {
 		  
 		  @GetMapping("/getxabscisseId/{id}")
 		  	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-			 public List  getxabscisseId(@PathVariable(value = "id") Integer id) {		
+			 public List<?>  getxabscisseId(@PathVariable(value = "id") Integer id) {		
 			  System.out.println(id);
 			  List<Xabscisse> X = xabscisseRepository.findAllByIdX(id);	
 			  for(Xabscisse o: X) {
@@ -335,7 +361,7 @@ public class ModuleController {
 	  
 	  @GetMapping("/getYByX/{idX}")
 	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	  public List getYByX(@PathVariable(value = "idX") Integer idX) {
+	  public List<?> getYByX(@PathVariable(value = "idX") Integer idX) {
 		  System.out.println(idX);
 		  List<Yabscisse> l= yabscisseRepository.findByXabscisseIdX(idX);
 		  for(Yabscisse o: l) {

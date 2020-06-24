@@ -3,7 +3,6 @@ package com.pfe.Service;
 import java.util.List;
 
 import com.pfe.Model.Xabscisse;
-import com.pfe.Model.Yabscisse;
 
 public interface IXabscisseService {
 	
